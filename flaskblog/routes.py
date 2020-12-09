@@ -1,9 +1,10 @@
-from flask import Flask, render_template, url_for, flash, redirect
-from form import RegistrationForm, LoginForm
-app = Flask(__name__)
+from flask import render_template, url_for, flash, redirect
+from flaskblog import app
+from flaskblog.models import User, Post
+from flaskblog.form import RegistrationForm, LoginForm
 
-app.config['SECRET_KEY'] = '49a253f01b04dd328abd2198ba36e499'
 
+# the sample data at the home page
 posts = [
     {
         'author' : 'Corey Schafer',
@@ -22,18 +23,18 @@ posts = [
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', posts=posts)
+    return render_template('home.html', posts=posts) # transfer here posts to the html's posts
 
 @app.route("/about")
 def about():
-    return render_template('about.html', title='About')
+    return render_template('about.html', title='About') # module setting the title name
 
-@app.route("/register", methods=['GET', 'POST'])
+@app.route("/register", methods=['GET', 'POST']) # methods : used for the 'form' submit
 def register():
-    form = RegistrationForm()
+    form = RegistrationForm() # declare our form
     if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
+        flash(f'Account created for {form.username.data}!', 'success') # flash : add a new item
+        return redirect(url_for('home')) # redirect : redirect to another page
     return render_template('register.html', title='Register', form=form)
 
 
@@ -47,6 +48,3 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
-
-if __name__=="__main__":
-    app.run(debug=True)
